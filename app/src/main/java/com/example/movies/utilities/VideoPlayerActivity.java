@@ -2,9 +2,7 @@ package com.example.movies.utilities;
 
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.movies.R;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -18,12 +16,6 @@ import com.google.android.exoplayer2.util.Util;
 public class VideoPlayerActivity extends AppCompatActivity {
     private SimpleExoPlayer player;
     private PlayerView playerView;
-    private String videoPath;
-
-    public VideoPlayerActivity(String videoPath) {
-        this.videoPath = videoPath;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +29,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
         // Attach the player to the PlayerView
         playerView.setPlayer(player);
+
+        // Get the video path from the Intent's extra data
+        String videoPath = getIntent().getStringExtra("video_path");
 
         // Set the media URI to play the video (replace "video_path" with your video's local or remote path)
         Uri uri = Uri.parse(videoPath);

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.movies.Movie;
 import com.example.movies.MoviesRecyclerViewAdapter;
 import com.example.movies.R;
+import com.example.movies.utilities.VideoPlayerActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,9 +80,10 @@ public class HomeFragment extends Fragment {
     }
 
     public void startVideoPlayerActivity(String videoPath) {
-        Intent playVideoIntent = new Intent(Intent.ACTION_VIEW);
-        playVideoIntent.setDataAndType(Uri.parse(videoPath), "video/*");
-        startActivity(playVideoIntent);
+        // Create an Intent to start VideoPlayerActivity
+        Intent intent = new Intent(this.getActivity(), VideoPlayerActivity.class);
+        intent.putExtra("video_path", videoPath);
+        startActivity(intent);
     }
 
 
