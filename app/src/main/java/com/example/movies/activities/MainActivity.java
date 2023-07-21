@@ -9,6 +9,7 @@ import com.example.movies.fragments.HomeFragment;
 import com.example.movies.R;
 import com.example.movies.fragments.SearchFragment;
 import com.example.movies.fragments.WatchListFragment;
+import com.example.movies.utilities.Permissions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Permissions.checkIfPermissionIsGranted(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         homeFragment = new HomeFragment();
