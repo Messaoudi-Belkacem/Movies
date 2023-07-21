@@ -1,4 +1,4 @@
-package com.example.movies;
+package com.example.movies.fragments;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +13,11 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.movies.Movie;
+import com.example.movies.MoviesRecyclerViewAdapter;
+import com.example.movies.R;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -73,7 +78,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    void startVideoPlayerActivity(String videoPath) {
+    public void startVideoPlayerActivity(String videoPath) {
         Intent playVideoIntent = new Intent(Intent.ACTION_VIEW);
         playVideoIntent.setDataAndType(Uri.parse(videoPath), "video/*");
         startActivity(playVideoIntent);

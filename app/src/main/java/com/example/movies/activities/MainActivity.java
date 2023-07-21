@@ -1,14 +1,14 @@
-package com.example.movies;
+package com.example.movies.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ClipData;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.movies.fragments.HomeFragment;
+import com.example.movies.R;
+import com.example.movies.fragments.SearchFragment;
+import com.example.movies.fragments.WatchListFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
