@@ -81,9 +81,9 @@ public class HomeFragment extends Fragment {
 
     public void startVideoPlayerActivity(String videoPath) {
         // Create an Intent to start VideoPlayerActivity
-        Intent intent = new Intent(this.getActivity(), VideoPlayerActivity.class);
-        intent.putExtra("video_path", videoPath);
-        startActivity(intent);
+        Intent intent = new Intent(requireContext(), VideoPlayerActivity.class);
+        intent.putExtra("VIDEO_PATH", videoPath);
+        requireContext().startActivity(intent);
     }
 
 
