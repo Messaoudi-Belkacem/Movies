@@ -4,4 +4,7 @@
         <item name="android:navigationBarColor">@color/dark_ocean</item>
         <item name="android:statusBarColor">@color/dark_ocean</item>
     </style>
+    <style name="AppTheme.FullScreen" parent="Base.Theme.Movies">
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>
