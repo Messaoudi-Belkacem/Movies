@@ -33,7 +33,7 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.titleTextView.setText(movies.get(position).getTitle());
+        // here you put the image of every movie to the recycler view
     }
 
     @Override
@@ -49,12 +49,10 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private MaterialCardView card;
-        private TextView titleTextView;
         private ImageView thumbnail;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.movieTitleTextView);
             card = itemView.findViewById(R.id.card);
             thumbnail = itemView.findViewById(R.id.thumbnail);
             itemView.setOnClickListener(v -> {

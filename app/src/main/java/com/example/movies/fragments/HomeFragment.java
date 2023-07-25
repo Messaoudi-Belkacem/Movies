@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movies.Movie;
@@ -38,7 +39,7 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         moviesRecyclerView = rootView.findViewById(R.id.moviesRecyclerView);
-        moviesRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        moviesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             accessMoviesFolder();
