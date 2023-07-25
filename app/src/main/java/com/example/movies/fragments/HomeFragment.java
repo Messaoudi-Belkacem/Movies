@@ -1,26 +1,18 @@
 package com.example.movies.fragments;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.movies.Movie;
 import com.example.movies.MoviesRecyclerViewAdapter;
 import com.example.movies.R;
 import com.example.movies.utilities.VideoPlayerActivity;
-
-import java.io.File;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
@@ -41,16 +33,21 @@ public class HomeFragment extends Fragment {
         moviesRecyclerView = rootView.findViewById(R.id.moviesRecyclerView);
         moviesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
+        /**
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             accessMoviesFolder();
         }
+         */
 
+        Log.d("HomeFragment.java", "setting up moviesRecyclerViewAdapter");
         moviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter(movies, this);
         moviesRecyclerView.setAdapter(moviesRecyclerViewAdapter);
+        Log.d("HomeFragment.java", "moviesRecyclerViewAdapter set");
 
         return rootView;
     }
 
+    /**
     @RequiresApi(api = Build.VERSION_CODES.S)
     private void accessMoviesFolder() {
 
@@ -71,14 +68,16 @@ public class HomeFragment extends Fragment {
 
                 if (movieTitle.endsWith(".mp4")) {
                     movieTitle = movieTitle.substring(0, movieTitle.indexOf(".mp4"));
-                    movies.add(new Movie(movieTitle, movieFilePath));
+                    performMovieSearch(movieTitle, movieFilePath);
                 }
             }
         } else {
             // TODO
             // Handle the scenario where the movies folder does not exist or is not a directory
         }
+        Log.d("HomeFragment.java", "accessMoviesFolder method ended");
     }
+    */
 
     public void startVideoPlayerActivity(String videoPath) {
         // Create an Intent to start VideoPlayerActivity
@@ -87,5 +86,36 @@ public class HomeFragment extends Fragment {
         requireContext().startActivity(intent);
     }
 
+    /**
+    private void performMovieSearch(String movieTitle, String movieFilePath) {
 
+        TMDBService service = TMDBApiClient.getTMDBService();
+        Call<MovieResponse> call = service.searchMoviesByName(TMDBApiClient.getApiKey(), movieTitle);
+
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                if (response.isSuccessful()) {
+                    MovieResponse movieResponse = response.body();
+                    List<Movie> results = movieResponse.getResults();
+                    // Process the list of movies here
+                    Movie movie = results.get(0);
+                    movie.setAbsolutePath(movieFilePath);
+                    movies.add(movie);
+                } else {
+                    // Handle error
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                // Handle failure
+            }
+        });
+    }
+     */
+
+    public void setMovies(ArrayList<Movie> movies) {
+        this.movies = movies;
+    }
 }

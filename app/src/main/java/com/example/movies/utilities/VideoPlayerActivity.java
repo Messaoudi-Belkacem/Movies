@@ -3,10 +3,7 @@ package com.example.movies.utilities;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -89,9 +86,4 @@ public class VideoPlayerActivity extends AppCompatActivity {
         }
     }
 
-    private void hideNavigationBar() {
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        decorView.setSystemUiVisibility(uiOptions);
-    }
 }
