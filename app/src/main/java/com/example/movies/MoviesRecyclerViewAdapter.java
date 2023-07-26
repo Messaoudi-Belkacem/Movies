@@ -62,6 +62,7 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
     public void setMovies(ArrayList<Movie> movies) {
         this.movies = movies;
         notifyDataSetChanged();
+        Log.d("MoviesRecyclerViewAdapter", "notifyDataSetChanged method called");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

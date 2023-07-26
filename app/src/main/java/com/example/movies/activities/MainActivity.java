@@ -4,11 +4,10 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.movies.Movie;
 import com.example.movies.MovieResponse;
 import com.example.movies.R;
@@ -20,12 +19,12 @@ import com.example.movies.fragments.WatchListFragment;
 import com.example.movies.utilities.DialogUtilities;
 import com.example.movies.utilities.Permissions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.HttpException;
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     SearchFragment searchFragment;
 
     WatchListFragment watchListFragment;
-    private final ArrayList<Movie> movies = new ArrayList<>();
+    private ArrayList<Movie> movies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity.java", "accessMoviesFolder Called!");
 
         homeFragment = new HomeFragment();
-        homeFragment.setMovies(movies);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, homeFragment).commit();
         searchFragment = new SearchFragment();
         watchListFragment = new WatchListFragment();
@@ -61,14 +59,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeUI() {
         BottomNavigationView bottomNavigationBar = findViewById(R.id.bottom_navigation);
-        bottomNavigationBar.setOnItemReselectedListener(item -> {
+        bottomNavigationBar.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.item_1) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, homeFragment).commit();
+                homeFragment.setMovies(movies);
+                return true;
             } else if (item.getItemId() == R.id.item_2) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, searchFragment).commit();
+                return true;
             } else if (item.getItemId() == R.id.item_3) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, watchListFragment).commit();
-            }
+                return true;
+            } else return false;
         });
     }
 
@@ -95,17 +97,16 @@ public class MainActivity extends AppCompatActivity {
                     // Retrieve movie information and store in your app's data model
                     String movieTitle = movieFile.getName();
                     String movieFilePath = movieFile.getAbsolutePath();
-                    // TODO
-
 
                     if (movieTitle.endsWith(".mp4")) {
                         movieTitle = movieTitle.substring(0, movieTitle.indexOf(".mp4"));
                         performMovieSearch(movieTitle, movieFilePath);
                     }
                 }
+                // notify that all movies have been added successfully
+                Log.d("MainActivity.java", "All movies have been added successfully");
             }
         } else {
-            // TODO
             // Handle the scenario where the movies folder does not exist or is not a directory
             Log.d("MainActivity.java", "Movie folder not found !");
             AlertDialog dialog = DialogUtilities.MoviesFolderDialog(this);
@@ -129,13 +130,16 @@ public class MainActivity extends AppCompatActivity {
                     Movie movie = results.get(0);
                     movie.setAbsolutePath(movieFilePath);
                     movies.add(movie);
+                    Log.d("MainActivity.java",  movie.getTitle() + " added successfully !");
+                    homeFragment.setMovies(movies);
                 } else {
+                    // TODO
                     // Handle error
                 }
             }
 
             @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
                 // Handle failure
                 if (t instanceof IOException) {
                     // Network or conversion error (e.g., no internet connection)
@@ -161,6 +165,10 @@ public class MainActivity extends AppCompatActivity {
             if (file.getName().endsWith(".mp4")) return true;
         }
         return false;
+    }
+
+    public ArrayList<Movie> getMovies() {
+        return movies;
     }
 
 }
