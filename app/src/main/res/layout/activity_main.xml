@@ -21,4 +21,5 @@
         style="@style/Base.Theme.Movies"
         android:background="@drawable/custom_navigation_bar_background"
         app:menu="@menu/bottom_navigation_menu" />
+
 </androidx.appcompat.widget.LinearLayoutCompat>

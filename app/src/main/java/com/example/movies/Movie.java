@@ -1,8 +1,9 @@
 package com.example.movies;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Movie {
+public class Movie implements Serializable {
 
     private int id;
     private String overview;
@@ -12,13 +13,14 @@ public class Movie {
     private Date release_date;
     private String absolutePath;
     private String poster_path;
+    private String backdrop_path;
 
     public Movie(String title,String absolutePath) {
         this.title = title;
         this.absolutePath = absolutePath;
     }
 
-    public Movie(int id, String overview, String title, float vote_average, String genre, Date release_date, String absolutePath, String poster_path) {
+    public Movie(int id, String overview, String title, float vote_average, String genre, Date release_date, String absolutePath, String poster_path, String backdrop_path) {
         this.id = id;
         this.overview = overview;
         this.title = title;
@@ -27,7 +29,7 @@ public class Movie {
         this.release_date = release_date;
         this.absolutePath = absolutePath;
         this.poster_path = poster_path;
-
+        this.backdrop_path = backdrop_path;
     }
 
     public int getId() {
@@ -92,5 +94,13 @@ public class Movie {
 
     public void setPoster_path(String poster_path) {
         this.poster_path = poster_path;
+    }
+
+    public String getBackdrop_path() {
+        return backdrop_path;
+    }
+
+    public void setBackdrop_path(String backdrop_path) {
+        this.backdrop_path = backdrop_path;
     }
 }

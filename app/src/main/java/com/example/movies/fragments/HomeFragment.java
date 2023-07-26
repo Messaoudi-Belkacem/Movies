@@ -1,5 +1,6 @@
 package com.example.movies.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.movies.Movie;
 import com.example.movies.MoviesRecyclerViewAdapter;
 import com.example.movies.R;
+import com.example.movies.activities.DetailActivity;
 import com.example.movies.utilities.VideoPlayerActivity;
 import java.util.ArrayList;
 
@@ -39,10 +41,17 @@ public class HomeFragment extends Fragment {
         return rootView;
     }
 
-    public void startVideoPlayerActivity(String videoPath) {
+    public static void startVideoPlayerActivity(String videoPath, Context context) {
         // Create an Intent to start VideoPlayerActivity
-        Intent intent = new Intent(requireContext(), VideoPlayerActivity.class);
+        Intent intent = new Intent(context, VideoPlayerActivity.class);
         intent.putExtra("VIDEO_PATH", videoPath);
+        context.startActivity(intent);
+    }
+
+    public void startDetailActivity(Movie movie) {
+        // Create an Intent to start VideoPlayerActivity
+        Intent intent = new Intent(requireContext(), DetailActivity.class);
+        intent.putExtra("MOVIE", movie);
         requireContext().startActivity(intent);
     }
 

@@ -1,6 +1,5 @@
 package com.example.movies;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +37,7 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Log.d("MoviesRecyclerViewAdapter.java", "Line 44");
+        Log.d("MoviesRecyclerViewAdapter.java", "onBindViewHolderMethod Called");
         // here you put the image of every movie to the recycler view
         String imageUrl = "https://image.tmdb.org/t/p/original/" + movies.get(position).getPoster_path();
 
@@ -75,10 +74,13 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
             card = itemView.findViewById(R.id.card);
             thumbnail = itemView.findViewById(R.id.thumbnail);
             itemView.setOnClickListener(v -> {
-                int position = getAdapterPosition();
+                int position = getBindingAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
+                    /*
                     String videoPath = movies.get(position).getAbsolutePath();
                     fragment.startVideoPlayerActivity(videoPath);
+                     */
+                    fragment.startDetailActivity(movies.get(position));
                 }
             });
         }

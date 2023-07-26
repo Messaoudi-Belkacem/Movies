@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,8 +18,6 @@ import com.example.movies.fragments.WatchListFragment;
 import com.example.movies.utilities.DialogUtilities;
 import com.example.movies.utilities.Permissions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,9 +28,9 @@ import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+
     HomeFragment homeFragment;
     SearchFragment searchFragment;
-
     WatchListFragment watchListFragment;
     private ArrayList<Movie> movies = new ArrayList<>();
 
@@ -55,9 +52,11 @@ public class MainActivity extends AppCompatActivity {
 
         initializeUI();
         Log.d("MainActivity", "onCreate method called");
+
     }
 
     private void initializeUI() {
+
         BottomNavigationView bottomNavigationBar = findViewById(R.id.bottom_navigation);
         bottomNavigationBar.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.item_1) {
@@ -72,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else return false;
         });
+
     }
 
     private void accessMoviesFolder() {
