@@ -1,18 +1,32 @@
 package com.example.movies;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Entity
 public class Movie implements Serializable {
 
+    @PrimaryKey
     private int id;
+    @ColumnInfo(name = "overview")
     private String overview;
+    @ColumnInfo(name = "title")
     private String title;
+    @ColumnInfo(name = "vote_average")
     private float vote_average;
+    @ColumnInfo(name = "genre")
     private String genre;
+    @ColumnInfo(name = "release_date")
     private Date release_date;
+    @ColumnInfo(name = "absolutePath")
     private String absolutePath;
+    @ColumnInfo(name = "poster_path")
     private String poster_path;
+    @ColumnInfo(name = "backdrop_path")
     private String backdrop_path;
 
     public Movie(String title,String absolutePath) {
