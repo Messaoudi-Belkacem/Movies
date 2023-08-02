@@ -1,7 +1,6 @@
 package com.example.movies.activities;
 
 import android.app.AlertDialog;
-import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -34,12 +33,13 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Fragments
     HomeFragment homeFragment;
     SearchFragment searchFragment;
     WatchListFragment watchListFragment;
+    // Database
     AppDatabase appDatabase;
     MovieDao movieDao;
-    private ArrayList<Movie> movies = new ArrayList<>();
     private ArrayList<Movie> moviesDb = new ArrayList<>();
 
     @Override
@@ -59,16 +59,24 @@ public class MainActivity extends AppCompatActivity {
         setMoviesDb();
         Log.d("MainActivity.java", "setMoviesDb Called!");
 
-        accessMoviesFolder();
-        Log.d("MainActivity.java", "accessMoviesFolder Called!");
-
         homeFragment = new HomeFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, homeFragment).commit();
         searchFragment = new SearchFragment();
         watchListFragment = new WatchListFragment();
 
         initializeUI();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, homeFragment).commit();
+
         Log.d("MainActivity", "onCreate method called");
+
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+
+        accessMoviesFolder();
+        Log.d("MainActivity.java", "accessMoviesFolder Called!");
 
     }
 
@@ -78,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationBar.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.item_1) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, homeFragment).commit();
-                homeFragment.setMovies(movies);
+                homeFragment.setMovies(moviesDb);
+                Log.d("MainActivity.java", "home fragment set !");
                 return true;
             } else if (item.getItemId() == R.id.item_2) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, searchFragment).commit();
@@ -104,26 +113,33 @@ public class MainActivity extends AppCompatActivity {
 
             if (!containsMovies(movieFiles)) {
                 // Movies Folder is empty
-                Log.d("MainActivity.java", "Movie folder is empty !");
+                Log.d("MainActivity.java", "Movie folder does not contain movies !");
                 AlertDialog dialog = DialogUtilities.MoviesFolderIsEmptyDialog(this);
                 dialog.show();
             } else {
                 // Movies Folder is not empty
                 // Process the movie files
                 for (File movieFile : movieFiles) {
+
                     String movieTitle = movieFile.getName();
 
                     if (movieTitle.endsWith(".mp4")) {
+
                         movieTitle = movieTitle.substring(0, movieTitle.indexOf(".mp4"));
                         String movieFilePath = movieFile.getAbsolutePath();
+
                         Movie movie = new Movie(movieTitle, movieFilePath);
+
                         if (!moviesDb.contains(movie)) {
+
+                            // If the movie is not in the database
                             Log.d("MainActivity.java",  movieTitle +" movie does not exist in the database");
                             performMovieSearch(movieTitle, movieFilePath);
+
                         } else {
-                            movies.add(moviesDb.get(moviesDb.indexOf(movie)));
-                            Log.d("MainActivity.java",  movie.getTitle() + " exists in the database and is added successfully !");
-                            // homeFragment.setMovies(movies);
+
+                            Log.d("MainActivity.java",  movie.getTitle() + " movie already exists in the database!");
+
                         }
                     }
                 }
@@ -153,18 +169,14 @@ public class MainActivity extends AppCompatActivity {
                     // Process the list of movies here
                     Movie movie = results.get(0);
                     movie.setAbsolutePath(movieFilePath);
-                    try {
-                        movieDao.insertAllMovies(movie);
-                    } catch (SQLiteConstraintException sqLiteConstraintException) {
-                        Log.d("MainActivity.java", movieTitle + " is duplicate");
-                    }
-
-                    movies.add(movie);
+                    movieDao.upsert(movie);
+                    setMoviesDb();
                     Log.d("MainActivity.java",  movie.getTitle() + " added successfully !");
-                    homeFragment.setMovies(movies);
+                    homeFragment.setMovies(moviesDb);
                 } else {
                     // TODO
                     // Handle error
+                    Log.d("MainActivity.java",  "Response is unsuccessful !");
                 }
             }
 
@@ -201,10 +213,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setMoviesDb() {
         moviesDb = (ArrayList<Movie>) movieDao.getAllMovies();
-    }
-
-    public ArrayList<Movie> getMovies() {
-        return movies;
     }
 
 }

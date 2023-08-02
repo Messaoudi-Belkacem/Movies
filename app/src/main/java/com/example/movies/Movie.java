@@ -87,7 +87,7 @@ public class Movie implements Serializable {
     public boolean equals(@Nullable Object obj) {
         if (obj != null) {
             if (obj.getClass() == Movie.class) {
-                return (this.title.equals(((Movie) obj).title)) && (this.absolutePath.equals(((Movie) obj).absolutePath));
+                return (this.absolutePath.equals(((Movie) obj).absolutePath));
             }
         }
         return false;

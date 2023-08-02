@@ -5,25 +5,19 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.movies.CollectionAdapter;
 import com.example.movies.Movie;
 import com.example.movies.R;
-import com.example.movies.fragments.AboutMovieFragment;
-import com.example.movies.fragments.CastFragment;
 import com.example.movies.fragments.HomeFragment;
-import com.example.movies.fragments.ReviewsFragment;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
 import java.util.Calendar;
 import java.util.Date;
 
@@ -38,9 +32,6 @@ public class DetailActivity extends AppCompatActivity {
     TextView genreTextView;
     Button watchButton;
     TabLayout tabLayout;
-    AboutMovieFragment aboutMovieFragment;
-    ReviewsFragment reviewsFragment;
-    CastFragment castFragment;
     Movie movie;
     CollectionAdapter collectionAdapter;
     ViewPager2 viewPager2;
@@ -59,10 +50,9 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void initializeUI() {
+
         topAppBar = findViewById(R.id.topAppBar);
-        topAppBar.setNavigationOnClickListener(view -> {
-            finish();
-        });
+        topAppBar.setNavigationOnClickListener(view -> finish());
         backDropImageView = findViewById(R.id.backDropImageView);
         setBackDropImageView();
 
@@ -86,9 +76,7 @@ public class DetailActivity extends AppCompatActivity {
         genreTextView.setText(movie.getGenre());
 
         watchButton = findViewById(R.id.watchButton);
-        watchButton.setOnClickListener(view -> {
-            HomeFragment.startVideoPlayerActivity(movie.getAbsolutePath(), this);
-        });
+        watchButton.setOnClickListener(view -> HomeFragment.startVideoPlayerActivity(movie.getAbsolutePath(), this));
 
         tabLayout = findViewById(R.id.tabLayout);
 
@@ -119,7 +107,7 @@ public class DetailActivity extends AppCompatActivity {
         // Load the image using Glide
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(R.drawable.media) // Placeholder image while loading
-                .error(R.drawable.media) // Image to display if loading fails
+                .error(R.drawable.baseline_error_24) // Image to display if loading fails
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC); // Cache the image automatically
 
         Glide.with(this)
@@ -135,7 +123,7 @@ public class DetailActivity extends AppCompatActivity {
         // Load the image using Glide
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(R.drawable.media) // Placeholder image while loading
-                .error(R.drawable.media) // Image to display if loading fails
+                .error(R.drawable.baseline_error_24) // Image to display if loading fails
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC); // Cache the image automatically
 
         Glide.with(this)

@@ -44,7 +44,7 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
         // Load the image using Glide
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(R.drawable.media) // Placeholder image while loading
-                .error(R.drawable.media) // Image to display if loading fails
+                .error(R.drawable.baseline_error_24) // Image to display if loading fails
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC); // Cache the image automatically
 
         Glide.with(fragment.getActivity())
@@ -61,7 +61,7 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
     public void setMovies(ArrayList<Movie> movies) {
         this.movies = movies;
         notifyDataSetChanged();
-        Log.d("MoviesRecyclerViewAdapter", "notifyDataSetChanged method called");
+        Log.d("MoviesRecyclerViewAdapter.java", "notifyDataSetChanged method called");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -76,10 +76,6 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
             itemView.setOnClickListener(v -> {
                 int position = getBindingAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    /*
-                    String videoPath = movies.get(position).getAbsolutePath();
-                    fragment.startVideoPlayerActivity(videoPath);
-                     */
                     fragment.startDetailActivity(movies.get(position));
                 }
             });
