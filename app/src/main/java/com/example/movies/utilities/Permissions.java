@@ -3,6 +3,7 @@ package com.example.movies.utilities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +18,7 @@ public class Permissions extends AppCompatActivity {
 
     public static void checkIfPermissionIsGranted(Activity activity) {
         if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(activity, "Permission is already granted", Toast.LENGTH_SHORT).show();
+            Log.d("Permissions.java", "Permission is already granted");
         } else {
             requestStoragePermission(activity);
         }

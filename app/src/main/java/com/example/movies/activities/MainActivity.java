@@ -1,12 +1,15 @@
 package com.example.movies.activities;
 
 import android.app.AlertDialog;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
+
 import com.example.movies.Movie;
 import com.example.movies.MovieResponse;
 import com.example.movies.R;
@@ -15,6 +18,8 @@ import com.example.movies.api.TMDBService;
 import com.example.movies.fragments.HomeFragment;
 import com.example.movies.fragments.SearchFragment;
 import com.example.movies.fragments.WatchListFragment;
+import com.example.movies.room.AppDatabase;
+import com.example.movies.room.MovieDao;
 import com.example.movies.utilities.DialogUtilities;
 import com.example.movies.utilities.Permissions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,7 +37,10 @@ public class MainActivity extends AppCompatActivity {
     HomeFragment homeFragment;
     SearchFragment searchFragment;
     WatchListFragment watchListFragment;
+    AppDatabase appDatabase;
+    MovieDao movieDao;
     private ArrayList<Movie> movies = new ArrayList<>();
+    private ArrayList<Movie> moviesDb = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +49,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        appDatabase = Room.databaseBuilder(getApplicationContext(),
+                        AppDatabase.class,
+                        "movie")
+                        .allowMainThreadQueries()
+                        .build();
+        movieDao = appDatabase.movieDao();
+
+        setMoviesDb();
+        Log.d("MainActivity.java", "setMoviesDb Called!");
 
         accessMoviesFolder();
         Log.d("MainActivity.java", "accessMoviesFolder Called!");
@@ -77,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     private void accessMoviesFolder() {
 
         String folderPath = Environment.getExternalStorageDirectory() + "/Movies";
-        Log.d("Permission", String.valueOf(Environment.isExternalStorageManager()));
+        Log.d("MainActivity.java", "Permission : " + Environment.isExternalStorageManager());
         File folder = new File(folderPath);
 
         if (folder.exists() && folder.isDirectory()) {
@@ -90,17 +107,24 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MainActivity.java", "Movie folder is empty !");
                 AlertDialog dialog = DialogUtilities.MoviesFolderIsEmptyDialog(this);
                 dialog.show();
-                Toast.makeText(this, "Movies folder is empty !", Toast.LENGTH_SHORT).show();
             } else {
-                // Process the movie files as needed
+                // Movies Folder is not empty
+                // Process the movie files
                 for (File movieFile : movieFiles) {
-                    // Retrieve movie information and store in your app's data model
                     String movieTitle = movieFile.getName();
-                    String movieFilePath = movieFile.getAbsolutePath();
 
                     if (movieTitle.endsWith(".mp4")) {
                         movieTitle = movieTitle.substring(0, movieTitle.indexOf(".mp4"));
-                        performMovieSearch(movieTitle, movieFilePath);
+                        String movieFilePath = movieFile.getAbsolutePath();
+                        Movie movie = new Movie(movieTitle, movieFilePath);
+                        if (!moviesDb.contains(movie)) {
+                            Log.d("MainActivity.java",  movieTitle +" movie does not exist in the database");
+                            performMovieSearch(movieTitle, movieFilePath);
+                        } else {
+                            movies.add(moviesDb.get(moviesDb.indexOf(movie)));
+                            Log.d("MainActivity.java",  movie.getTitle() + " exists in the database and is added successfully !");
+                            // homeFragment.setMovies(movies);
+                        }
                     }
                 }
                 // notify that all movies have been added successfully
@@ -129,6 +153,12 @@ public class MainActivity extends AppCompatActivity {
                     // Process the list of movies here
                     Movie movie = results.get(0);
                     movie.setAbsolutePath(movieFilePath);
+                    try {
+                        movieDao.insertAllMovies(movie);
+                    } catch (SQLiteConstraintException sqLiteConstraintException) {
+                        Log.d("MainActivity.java", movieTitle + " is duplicate");
+                    }
+
                     movies.add(movie);
                     Log.d("MainActivity.java",  movie.getTitle() + " added successfully !");
                     homeFragment.setMovies(movies);
@@ -161,10 +191,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean containsMovies(File[] files) {
-        for (File file : files) {
-            if (file.getName().endsWith(".mp4")) return true;
+        if (files != null) {
+            for (File file : files) {
+                if (file.getName().endsWith(".mp4")) return true;
+            }
         }
         return false;
+    }
+
+    private void setMoviesDb() {
+        moviesDb = (ArrayList<Movie>) movieDao.getAllMovies();
     }
 
     public ArrayList<Movie> getMovies() {
