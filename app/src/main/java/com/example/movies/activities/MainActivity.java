@@ -123,9 +123,14 @@ public class MainActivity extends AppCompatActivity {
 
                     String movieTitle = movieFile.getName();
 
-                    if (movieTitle.endsWith(".mp4")) {
+                    if (movieTitle.endsWith(".mp4") || movieTitle.endsWith(".mkv")) {
 
-                        movieTitle = movieTitle.substring(0, movieTitle.indexOf(".mp4"));
+                        if(movieTitle.endsWith(".mp4")) {
+                            movieTitle = movieTitle.substring(0, movieTitle.indexOf(".mp4"));
+                        } else if (movieTitle.endsWith(".mkv")) {
+                            movieTitle = movieTitle.substring(0, movieTitle.indexOf(".mkv"));
+                        }
+
                         String movieFilePath = movieFile.getAbsolutePath();
 
                         Movie movie = new Movie(movieTitle, movieFilePath);
