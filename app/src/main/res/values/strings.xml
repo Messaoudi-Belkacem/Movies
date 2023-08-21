@@ -2,4 +2,7 @@
     <string name="app_name">Movies</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text1">Why Movies Needs Access to Your Phone\'s Storage:</string>
+    <string name="text2">At Movies, we\'re committed to providing you with the best user experience and a seamless journey within the app. To achieve this, we request permission to access your phone\'s storage. We understand that privacy and security are of utmost importance to you, and we want to assure you that your data remains safe and secure in our hands.</string>
+    <string name="allow_access">Allow access</string>
 </resources>

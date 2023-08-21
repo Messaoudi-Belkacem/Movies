@@ -17,6 +17,7 @@
         android:theme="@style/Base.Theme.Movies"
         tools:targetApi="31">
         <activity android:name=".activities.MainActivity" />
+        <activity android:name=".activities.AllowAccessActivity" />
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true">

@@ -44,10 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        Permissions.checkIfPermissionIsGranted(this);
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         appDatabase = Room.databaseBuilder(getApplicationContext(),
                         AppDatabase.class,
@@ -74,14 +71,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
 
         super.onStart();
-
         accessMoviesFolder();
         Log.d("MainActivity.java", "accessMoviesFolder Called!");
 
     }
 
     private void initializeUI() {
-
         BottomNavigationView bottomNavigationBar = findViewById(R.id.bottom_navigation);
         bottomNavigationBar.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.item_1) {
