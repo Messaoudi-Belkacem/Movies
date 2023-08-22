@@ -16,7 +16,7 @@
             android:gravity="center_vertical"
             android:layout_marginTop="10dp">
             <ImageView
-                android:id="@+id/video_back"
+                android:id="@+id/videoBackButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:padding="10dp"
@@ -101,16 +101,10 @@
                 android:src="@drawable/ic_previous"
                 android:layout_weight="1" />
             <ImageView
-                android:id="@+id/exo_play"
+                android:id="@+id/playButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_play"
-                android:layout_weight="1" />
-            <ImageView
-                android:id="@+id/exo_pause"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_pause"
                 android:layout_weight="1" />
             <ImageView
                 android:id="@+id/exo_next"

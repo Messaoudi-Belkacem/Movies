@@ -1,25 +1,32 @@
 package com.example.movies.activities;
 
-import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
 import com.example.movies.R;
 
-public class VideoPlayerActivity extends AppCompatActivity {
-    PlayerView playerView;
+    @UnstableApi public class VideoPlayerActivity extends AppCompatActivity {
+    private PlayerView playerView;
     private ExoPlayer player;
     private String movieTitle;
     private TextView videoTitleTextView;
+    private ImageView videoBackImageView;
+    private ImageView scalingImageView;
+    private ImageView playerImageView;
+    private int i = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +64,39 @@ public class VideoPlayerActivity extends AppCompatActivity {
         movieTitle = getIntent().getStringExtra("VIDEO_TITLE");
         videoTitleTextView = findViewById(R.id.videoTitleTextView);
         videoTitleTextView.setText(movieTitle);
+        videoBackImageView = findViewById(R.id.videoBackButton);
+        videoBackImageView.setOnClickListener(view -> {
+            if (player != null) {
+                player.release();
+            }
+            finish();
+        });
+        scalingImageView = findViewById(R.id.scaling);
+        scalingImageView.setOnClickListener(view -> {
+            if (i == 0) {
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+                player.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+                i++;
+            } else if (i == 1) {
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+                player.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+                i++;
+            } else if (i == 2) {
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+                player.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+                i = 0;
+            }
+        });
+        playerImageView = findViewById(R.id.playButton);
+        playerImageView.setOnClickListener(view -> {
+            if (player.getPlayWhenReady()) {
+                player.setPlayWhenReady(false);
+                playerImageView.setImageResource(R.drawable.ic_play);
+            } else {
+                player.setPlayWhenReady(true);
+                playerImageView.setImageResource(R.drawable.ic_pause);
+            }
+        });
     }
 
     private void playMovie() {
