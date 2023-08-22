@@ -3,11 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".utilities.VideoPlayerActivity" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activities.VideoPlayerActivity">
 
     <androidx.media3.ui.PlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        app:hide_on_touch="true"
+        app:resize_mode="fit"
+        app:shutter_background_color="@color/black"
+        app:use_controller="true"
+        app:show_timeout="5000"
+        app:surface_type="surface_view"
+        app:controller_layout_id="@layout/custom_playback_layout"/>
 
 </RelativeLayout>

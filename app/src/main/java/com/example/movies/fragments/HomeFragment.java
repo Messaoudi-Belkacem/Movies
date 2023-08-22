@@ -14,7 +14,7 @@ import com.example.movies.Movie;
 import com.example.movies.MoviesRecyclerViewAdapter;
 import com.example.movies.R;
 import com.example.movies.activities.DetailActivity;
-import com.example.movies.utilities.VideoPlayerActivity;
+import com.example.movies.activities.VideoPlayerActivity;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
@@ -41,10 +41,11 @@ public class HomeFragment extends Fragment {
         return rootView;
     }
 
-    public static void startVideoPlayerActivity(String videoPath, Context context) {
+    public static void startVideoPlayerActivity(String videoPath, String videoTitle, Context context) {
         // Create an Intent to start VideoPlayerActivity
         Intent intent = new Intent(context, VideoPlayerActivity.class);
         intent.putExtra("VIDEO_PATH", videoPath);
+        intent.putExtra("VIDEO_TITLE", videoTitle);
         context.startActivity(intent);
     }
 

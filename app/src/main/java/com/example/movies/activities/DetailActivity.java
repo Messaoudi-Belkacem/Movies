@@ -76,7 +76,7 @@ public class DetailActivity extends AppCompatActivity {
         genreTextView.setText(movie.getGenre());
 
         watchButton = findViewById(R.id.watchButton);
-        watchButton.setOnClickListener(view -> HomeFragment.startVideoPlayerActivity(movie.getAbsolutePath(), this));
+        watchButton.setOnClickListener(view -> HomeFragment.startVideoPlayerActivity(movie.getAbsolutePath(), movie.getTitle(), this));
 
         tabLayout = findViewById(R.id.tabLayout);
 
