@@ -1,10 +1,16 @@
 package com.example.movies.activities;
 
+import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -26,13 +32,18 @@ import com.example.movies.R;
     private ImageView videoBackImageView;
     private ImageView scalingImageView;
     private ImageView playerImageView;
+    private ImageView lockAndUnlockImageView;
+    private ImageView rotateScreenImageView;
+    private RelativeLayout root_layout;
     private int i = 0;
+    private boolean locked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setFullScreen();
         setContentView(R.layout.activity_video_player);
         initializeUI();
+        putBottomIconsOnTopOfNavBar();
         playMovie();
     }
 
@@ -76,14 +87,17 @@ import com.example.movies.R;
             if (i == 0) {
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
                 player.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+                scalingImageView.setImageResource(R.drawable.ic_fullscreen);
                 i++;
             } else if (i == 1) {
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
                 player.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+                scalingImageView.setImageResource(R.drawable.ic_zoom);
                 i++;
             } else if (i == 2) {
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
                 player.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+                scalingImageView.setImageResource(R.drawable.ic_fit_screen);
                 i = 0;
             }
         });
@@ -96,6 +110,23 @@ import com.example.movies.R;
                 player.setPlayWhenReady(true);
                 playerImageView.setImageResource(R.drawable.ic_pause);
             }
+        });
+        lockAndUnlockImageView = findViewById(R.id.lockAndUnlockButton);
+        root_layout = findViewById(R.id.root_layout);
+        lockAndUnlockImageView.setOnClickListener(view -> {
+            if (locked) {
+                root_layout.setVisibility(View.VISIBLE);
+                lockAndUnlockImageView.setImageResource(R.drawable.ic_unlock);
+                locked = false;
+            } else {
+                root_layout.setVisibility(View.INVISIBLE);
+                lockAndUnlockImageView.setImageResource(R.drawable.ic_lock);
+                locked = true;
+            }
+        });
+        rotateScreenImageView = findViewById(R.id.screenRotationButton);
+        rotateScreenImageView.setOnClickListener(view -> {
+            rotateScreen();
         });
     }
 
@@ -115,5 +146,35 @@ import com.example.movies.R;
         WindowInsetsControllerCompat windowInsetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+    }
+
+    private void putBottomIconsOnTopOfNavBar() {
+        View rootLayout = findViewById(R.id.root_layout); // Replace with your root layout's ID
+        View bottomIconsLayout = findViewById(R.id.bottomIconsLinearLayout);
+
+        rootLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            Rect rect = new Rect();
+            rootLayout.getWindowVisibleDisplayFrame(rect);
+
+            int screenHeight = rootLayout.getHeight();
+            int keyboardHeight = screenHeight - rect.bottom;
+
+            if (keyboardHeight > screenHeight * 0.15) {
+                // Keyboard is showing, adjust the position of your bottom icons
+                bottomIconsLayout.setTranslationY(-keyboardHeight);
+            } else {
+                // Keyboard is not showing, reset the position of your bottom icons
+                bottomIconsLayout.setTranslationY(0);
+            }
+        });
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private void rotateScreen() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 }

@@ -15,7 +15,6 @@
         app:resize_mode="fit"
         app:shutter_background_color="@color/black"
         app:use_controller="true"
-        app:show_timeout="5000"
         app:surface_type="surface_view"
         app:controller_layout_id="@layout/custom_playback_layout"/>
 

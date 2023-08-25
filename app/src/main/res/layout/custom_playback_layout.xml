@@ -80,51 +80,55 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
             android:weightSum="7"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:layout_marginBottom="10dp" >
             <ImageView
-                android:id="@+id/unlock"
+                android:id="@+id/scaling"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/ic_unlock"
+                android:src="@drawable/ic_fit_screen"
+                android:scaleType="fitCenter"
                 android:layout_weight="1" />
             <ImageView
                 android:id="@+id/exo_rew"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_fast_rewind"
-                android:layout_weight="1" />
-            <ImageView
-                android:id="@+id/exo_prev"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@drawable/ic_previous"
+                android:scaleType="fitCenter"
                 android:layout_weight="1" />
             <ImageView
                 android:id="@+id/playButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_play"
-                android:layout_weight="1" />
-            <ImageView
-                android:id="@+id/exo_next"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@drawable/ic_next"
+                android:src="@drawable/ic_pause"
+                android:scaleType="fitCenter"
+                android:layout_gravity="center"
                 android:layout_weight="1" />
             <ImageView
                 android:id="@+id/exo_ffwd"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_fast_forward"
+                android:scaleType="fitCenter"
                 android:layout_weight="1" />
             <ImageView
-                android:id="@+id/scaling"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_fit_screen"
-                android:layout_weight="1" />
+                android:id="@+id/screenRotationButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_rotate"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                />
         </LinearLayout>
-
     </RelativeLayout>
+    <ImageView
+        android:id="@+id/lockAndUnlockButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="16dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_unlock"
+        android:background="@drawable/ripple_circle"/>
 </RelativeLayout>
