@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -24,7 +25,9 @@ import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
 import com.example.movies.R;
 
-    @UnstableApi public class VideoPlayerActivity extends AppCompatActivity {
+@UnstableApi public class VideoPlayerActivity extends AppCompatActivity {
+    private static final String PLAYBACK_POSITION_KEY = "playback_position_key";
+    private long playbackPosition = 0;
     private PlayerView playerView;
     private ExoPlayer player;
     private String movieTitle;
@@ -40,6 +43,9 @@ import com.example.movies.R;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION_KEY);
+        }
         setFullScreen();
         setContentView(R.layout.activity_video_player);
         initializeUI();
@@ -58,6 +64,13 @@ import com.example.movies.R;
         super.onDestroy();
         // Release the player resources when the activity is destroyed
         player.release();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        playbackPosition = player.getCurrentPosition();
+        outState.putLong(PLAYBACK_POSITION_KEY, playbackPosition);
     }
 
     private void switchOrientation(int desiredOrientation) {
@@ -139,7 +152,8 @@ import com.example.movies.R;
         MediaItem mediaItem = MediaItem.fromUri(uri);
         player.setMediaItem(mediaItem);
         player.prepare();
-        player.play();
+        player.seekTo(playbackPosition);
+        player.setPlayWhenReady(true);
     }
 
     private void setFullScreen() {
