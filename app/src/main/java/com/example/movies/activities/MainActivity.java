@@ -38,6 +38,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private String tag = "MainActivity.java";
     private MainViewModel mainViewModel;
     // Fragments
     private HomeFragment homeFragment;
@@ -57,16 +58,14 @@ public class MainActivity extends AppCompatActivity {
                         "movie")
                         .build();
 
-        mainViewModel = new ViewModelProvider(this, new ViewModelFactory(appDatabase.movieDao()))
-                .get(MainViewModel.class);
-
-        Log.d("MainActivity.java", "setMoviesDb Called!");
+        mainViewModel = new ViewModelProvider(this, new ViewModelFactory(appDatabase.movieDao())).get(MainViewModel.class);
 
         homeFragment = new HomeFragment();
         searchFragment = new SearchFragment();
         watchListFragment = new WatchListFragment();
 
         mainViewModel.getMoviesData().observe(this, (Observer<List<Movie>>) movies -> {
+            Log.d(tag, "Observed List Changed !");
             moviesDb = (ArrayList<Movie>) movies;
             homeFragment.setMovies(moviesDb);
         });
