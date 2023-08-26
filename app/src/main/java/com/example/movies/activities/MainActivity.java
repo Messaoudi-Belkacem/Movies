@@ -7,6 +7,8 @@ import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 
 import com.example.movies.Movie;
@@ -21,10 +23,13 @@ import com.example.movies.room.AppDatabase;
 import com.example.movies.room.MovieDao;
 import com.example.movies.utilities.DialogUtilities;
 import com.example.movies.utilities.Permissions;
+import com.example.movies.viewmodels.MainViewModel;
+import com.example.movies.viewmodels.ViewModelFactory;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,47 +38,43 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private MainViewModel mainViewModel;
     // Fragments
-    HomeFragment homeFragment;
-    SearchFragment searchFragment;
-    WatchListFragment watchListFragment;
+    private HomeFragment homeFragment;
+    private SearchFragment searchFragment;
+    private WatchListFragment watchListFragment;
     // Database
-    AppDatabase appDatabase;
-    MovieDao movieDao;
+    private AppDatabase appDatabase;
     private ArrayList<Movie> moviesDb = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         appDatabase = Room.databaseBuilder(getApplicationContext(),
                         AppDatabase.class,
                         "movie")
-                        .allowMainThreadQueries()
                         .build();
-        movieDao = appDatabase.movieDao();
 
-        setMoviesDb();
+        mainViewModel = new ViewModelProvider(this, new ViewModelFactory(appDatabase.movieDao()))
+                .get(MainViewModel.class);
+
         Log.d("MainActivity.java", "setMoviesDb Called!");
 
         homeFragment = new HomeFragment();
         searchFragment = new SearchFragment();
         watchListFragment = new WatchListFragment();
 
+        mainViewModel.getMoviesData().observe(this, (Observer<List<Movie>>) movies -> {
+            moviesDb = (ArrayList<Movie>) movies;
+            homeFragment.setMovies(moviesDb);
+        });
+
         initializeUI();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, homeFragment).commit();
 
         Log.d("MainActivity", "onCreate method called");
-
-    }
-
-    @Override
-    protected void onStart() {
-
-        super.onStart();
-        accessMoviesFolder();
-        Log.d("MainActivity.java", "accessMoviesFolder Called!");
-
     }
 
     private void initializeUI() {
@@ -94,125 +95,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-    private void accessMoviesFolder() {
-
-        String folderPath = Environment.getExternalStorageDirectory() + "/Movies";
-        Log.d("MainActivity.java", "Permission : " + Environment.isExternalStorageManager());
-        File folder = new File(folderPath);
-
-        if (folder.exists() && folder.isDirectory()) {
-
-            Log.d("MainActivity.java", "Movie folder found !");
-            File[] movieFiles = folder.listFiles();
-
-            if (!containsMovies(movieFiles)) {
-                // Movies Folder is empty
-                Log.d("MainActivity.java", "Movie folder does not contain movies !");
-                AlertDialog dialog = DialogUtilities.MoviesFolderIsEmptyDialog(this);
-                dialog.show();
-            } else {
-                // Movies Folder is not empty
-                // Process the movie files
-                for (File movieFile : movieFiles) {
-
-                    String movieTitle = movieFile.getName();
-
-                    if (movieTitle.endsWith(".mp4") || movieTitle.endsWith(".mkv")) {
-
-                        if(movieTitle.endsWith(".mp4")) {
-                            movieTitle = movieTitle.substring(0, movieTitle.indexOf(".mp4"));
-                        } else if (movieTitle.endsWith(".mkv")) {
-                            movieTitle = movieTitle.substring(0, movieTitle.indexOf(".mkv"));
-                        }
-
-                        String movieFilePath = movieFile.getAbsolutePath();
-
-                        Movie movie = new Movie(movieTitle, movieFilePath);
-
-                        if (!moviesDb.contains(movie)) {
-
-                            // If the movie is not in the database
-                            Log.d("MainActivity.java",  movieTitle +" movie does not exist in the database");
-                            performMovieSearch(movieTitle, movieFilePath);
-
-                        } else {
-
-                            Log.d("MainActivity.java",  movie.getTitle() + " movie already exists in the database!");
-
-                        }
-                    }
-                }
-                // notify that all movies have been added successfully
-                Log.d("MainActivity.java", "All movies have been added successfully");
-            }
-        } else {
-            // Handle the scenario where the movies folder does not exist or is not a directory
-            Log.d("MainActivity.java", "Movie folder not found !");
-            AlertDialog dialog = DialogUtilities.MoviesFolderDialog(this);
-            dialog.show();
-            Toast.makeText(this, "Movies folder not found !", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void performMovieSearch(String movieTitle, String movieFilePath) {
-
-        TMDBService service = TMDBApiClient.getTMDBService();
-        Call<MovieResponse> call = service.searchMoviesByName(TMDBApiClient.getApiKey(), movieTitle);
-
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
-                if (response.isSuccessful()) {
-                    MovieResponse movieResponse = response.body();
-                    List<Movie> results = movieResponse.getResults();
-                    // Process the list of movies here
-                    Movie movie = results.get(0);
-                    movie.setAbsolutePath(movieFilePath);
-                    movieDao.upsert(movie);
-                    setMoviesDb();
-                    Log.d("MainActivity.java",  movie.getTitle() + " added successfully !");
-                    homeFragment.setMovies(moviesDb);
-                } else {
-                    // TODO
-                    // Handle error
-                    Log.d("MainActivity.java",  "Response is unsuccessful !");
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
-                // Handle failure
-                if (t instanceof IOException) {
-                    // Network or conversion error (e.g., no internet connection)
-                    // Handle the IOException appropriately
-                    Toast.makeText(getApplicationContext(), "no internet connection", Toast.LENGTH_SHORT).show();
-                    Log.d("MainActivity.java", "failure, no internet connection !");
-                } else if (t instanceof HttpException) {
-                    HttpException httpException = (HttpException) t;
-                    // HTTP error response (e.g., 404, 500)
-                    Toast.makeText(getApplicationContext(), "Http error " + httpException.code(), Toast.LENGTH_SHORT).show();
-                    Log.d("MainActivity.java", "Http error " + httpException.code());
-                } else {
-                    // Other unknown errors
-                    Toast.makeText(getApplicationContext(), "Unknown error", Toast.LENGTH_SHORT).show();
-                    Log.d("MainActivity.java", "Unknown error");
-                }
-            }
-        });
-    }
-
-    private boolean containsMovies(File[] files) {
-        if (files != null) {
-            for (File file : files) {
-                if (file.getName().endsWith(".mp4")) return true;
-            }
-        }
-        return false;
-    }
-
-    private void setMoviesDb() {
-        moviesDb = (ArrayList<Movie>) movieDao.getAllMovies();
-    }
-
 }

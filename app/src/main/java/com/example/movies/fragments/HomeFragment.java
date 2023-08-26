@@ -7,7 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.OptIn;
 import androidx.fragment.app.Fragment;
+import androidx.media3.common.util.UnstableApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.movies.Movie;
@@ -33,10 +36,8 @@ public class HomeFragment extends Fragment {
         moviesRecyclerView = rootView.findViewById(R.id.moviesRecyclerView);
         moviesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
-        Log.d("HomeFragment.java", "setting up moviesRecyclerViewAdapter");
         moviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter(movies, this);
         moviesRecyclerView.setAdapter(moviesRecyclerViewAdapter);
-        Log.d("HomeFragment.java", "moviesRecyclerViewAdapter set");
 
         return rootView;
     }
